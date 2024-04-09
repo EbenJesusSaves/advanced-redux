@@ -1,5 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import ApplicationContext from '../context';
+import { useDispatch } from 'react-redux';
+import { removeTask } from '../features/tasks-slice';
 
 type TaskProps = {
   task: Task;
@@ -7,7 +9,7 @@ type TaskProps = {
 
 const Task = ({ task }: TaskProps) => {
   const { columns, users } = useContext(ApplicationContext);
-
+  const dispatch = useDispatch();
   const status = columns.find((column) => column.id === task.column)?.title;
   const user = users.find((user) => user.id === task.user);
 
@@ -15,7 +17,14 @@ const Task = ({ task }: TaskProps) => {
     <article className="task">
       <header className="task-header">
         <h2 className="task-title">{task.title}</h2>
-        <button className="destructive small">Remove</button>
+        <button
+          onClick={() => {
+            dispatch(removeTask(task));
+          }}
+          className="destructive small"
+        >
+          Remove
+        </button>
       </header>
       <div className="task-details">
         <p className="task-status">{status}</p>

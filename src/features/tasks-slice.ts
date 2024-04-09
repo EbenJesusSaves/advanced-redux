@@ -5,7 +5,7 @@ export type TasksState = {
   entities: Task[];
 };
 
-type DraftTask = Pick<Task, 'title'>;
+type DraftTask = RequiredOnly<Task, 'title'>;
 
 const createTask = (draftTask: DraftTask) => {
   return { id: nanoid(), ...draftTask };
@@ -23,8 +23,14 @@ const TasksSlice = createSlice({
       const task = createTask(action.payload);
       state.entities.unshift(task);
     },
+    removeTask: (state, action: PayloadAction<DraftTask>) => {
+      const task: Task[] = state.entities.filter(
+        (task) => task.id !== action.payload.id,
+      );
+      state.entities = task;
+    },
   },
 });
 
-export const { addTask } = TasksSlice.actions;
+export const { addTask, removeTask } = TasksSlice.actions;
 export default TasksSlice.reducer;
